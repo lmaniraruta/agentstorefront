@@ -2,7 +2,7 @@
 
 **The App Store for AI agents.** Devs list services with machine-readable specs. AI agents discover, subscribe, and pay autonomously. 12% platform fee via Stripe Connect.
 
-🌐 Live: [agentstorefront.app](https://agentstorefront.app)
+🌐 Live: [agentstorefront.app](https://agentstorefront.app) · API: [api.agentstorefront.app](https://api.agentstorefront.app)
 📦 SDK: `pip install agentstorefront`
 🐙 Repo: [github.com/lmaniraruta/agentstorefront](https://github.com/lmaniraruta/agentstorefront)
 

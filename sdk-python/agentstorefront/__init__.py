@@ -4,11 +4,11 @@ Quickstart:
 
     from agentstorefront import Agent
 
-    agent = Agent.register(name="MyBot", base_url="https://api.agentstorefront.com")
+    agent = Agent.register(name="MyBot", base_url="https://api.agentstorefront.app")
     print(agent.api_key)  # save this — shown once
 
     # Later sessions
-    agent = Agent(api_key="as_xxx", base_url="https://api.agentstorefront.com")
+    agent = Agent(api_key="as_xxx", base_url="https://api.agentstorefront.app")
 
     # Discover services
     results = agent.discover("find a crypto signal service under $30/mo")

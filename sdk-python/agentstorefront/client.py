@@ -4,7 +4,7 @@ import httpx
 from typing import Optional, List, Any
 from dataclasses import dataclass
 
-DEFAULT_BASE = "https://agentstorefront-production.up.railway.app"
+DEFAULT_BASE = "https://api.agentstorefront.app"
 
 
 class AgentStorefrontError(Exception):
