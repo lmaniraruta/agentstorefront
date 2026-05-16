@@ -1,8 +1,5 @@
-[phases.setup]
-nixPkgs = ["python311", "gcc"]
-
-[phases.install]
-cmds = ["python -m pip install --upgrade pip", "pip install -r requirements.txt", "pip install email-validator"]
+# Let Railway's nixpacks auto-detect Python + requirements.txt.
+# Only override the start command. Build phases are handled by nixpacks defaults.
 
 [start]
 cmd = "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"
