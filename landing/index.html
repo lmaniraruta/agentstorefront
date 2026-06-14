@@ -190,38 +190,35 @@ data = agent.call(service_id=results[<span class="text-amber-300">0</span>].id, 
     <p class="text-zinc-400 text-lg mb-10">
       Tell us what you'd list. We'll review and onboard you in 24h.
     </p>
-    <form
-      id="sellerForm"
-      class="space-y-6"
-      onsubmit="event.preventDefault(); document.getElementById('thanks').classList.remove('hidden'); document.getElementById('sellerForm').classList.add('hidden');"
-    >
+    <form id="sellerForm" class="space-y-6">
       <div>
         <label class="block text-xs mono text-zinc-500 mb-2">EMAIL</label>
-        <input type="email" required class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:border-teal-400 focus:outline-none transition" placeholder="you@example.com" />
+        <input name="email" type="email" required class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:border-teal-400 focus:outline-none transition" placeholder="you@example.com" />
       </div>
       <div>
         <label class="block text-xs mono text-zinc-500 mb-2">SERVICE NAME</label>
-        <input type="text" required class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:border-teal-400 focus:outline-none transition" placeholder="Crypto Signal Pro" />
+        <input name="service_name" type="text" required class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:border-teal-400 focus:outline-none transition" placeholder="Crypto Signal Pro" />
       </div>
       <div>
         <label class="block text-xs mono text-zinc-500 mb-2">WHAT DOES IT DO? (2-3 SENTENCES)</label>
-        <textarea required rows="3" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:border-teal-400 focus:outline-none transition" placeholder="Real-time crypto trading signals. BTC, ETH, SOL coverage. JSON API."></textarea>
+        <textarea name="description" required rows="3" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:border-teal-400 focus:outline-none transition" placeholder="Real-time crypto trading signals. BTC, ETH, SOL coverage. JSON API."></textarea>
       </div>
       <div class="grid md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-xs mono text-zinc-500 mb-2">PRICE (USD)</label>
-          <input type="number" required min="0" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:border-teal-400 focus:outline-none transition" placeholder="29" />
+          <label class="block text-xs mono text-zinc-500 mb-2">PRICE (USD/mo)</label>
+          <input name="price" type="number" required min="0" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:border-teal-400 focus:outline-none transition" placeholder="29" />
         </div>
         <div>
           <label class="block text-xs mono text-zinc-500 mb-2">PRICING MODEL</label>
-          <select class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:border-teal-400 focus:outline-none transition">
-            <option>subscription (monthly)</option>
-            <option>per_call</option>
-            <option>usage-based</option>
+          <select name="pricing_model" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:border-teal-400 focus:outline-none transition">
+            <option value="subscription">subscription (monthly)</option>
+            <option value="per_call">per_call</option>
+            <option value="usage">usage-based</option>
           </select>
         </div>
       </div>
-      <button type="submit" class="w-full bg-teal-400 text-zinc-950 font-bold py-4 rounded-lg hover:bg-teal-300 transition">
+      <div id="formError" class="hidden bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3"></div>
+      <button id="submitBtn" type="submit" class="w-full bg-teal-400 text-zinc-950 font-bold py-4 rounded-lg hover:bg-teal-300 transition disabled:opacity-50 disabled:cursor-not-allowed">
         Apply to list →
       </button>
       <p class="text-xs text-zinc-500 text-center">No fees until you're earning. No setup work. You keep your API; we hand agents to it.</p>
@@ -233,6 +230,50 @@ data = agent.call(service_id=results[<span class="text-amber-300">0</span>].id, 
     </div>
   </div>
 </section>
+
+<script>
+  const API = 'https://api.agentstorefront.app';
+
+  document.getElementById('sellerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const errBox = document.getElementById('formError');
+    const fd = new FormData(this);
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+    errBox.classList.add('hidden');
+
+    try {
+      const res = await fetch(`${API}/sellers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: fd.get('email') }),
+      });
+
+      if (res.status === 201 || res.status === 200) {
+        document.getElementById('sellerForm').classList.add('hidden');
+        document.getElementById('thanks').classList.remove('hidden');
+        return;
+      }
+
+      if (res.status === 409) {
+        errBox.textContent = 'That email is already registered. We\'ll be in touch.';
+        errBox.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Apply to list →';
+        return;
+      }
+
+      throw new Error(`Server error ${res.status}`);
+    } catch (err) {
+      errBox.textContent = 'Could not reach server. Email us directly: lmaniraruta@gmail.com';
+      errBox.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Apply to list →';
+    }
+  });
+</script>
 
 <!-- footer -->
 <footer class="border-t border-zinc-800/60 py-12">
